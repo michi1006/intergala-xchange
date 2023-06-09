@@ -1,0 +1,25 @@
+Development Steps:
+
+1) TDD use cases - Roman Number conversion
+
+- ensure roman number translation:
+	MMXXIII = 2023
+	MXL = 1040
+	MCMXLIV = 1944
+	XXXX = Invalid
+	MMIM = Invalid
+	DDIX = Invalid
+
+2) Develop Roman Number Convertor
+- make test cases turn green
+- add method CurrencyConvertor:convertRomanToArabic
+
+3) TDD use cases - File Input validation
+- test reading from valid file
+- test reading from invalid file
+- test result according to test output
+- ensure NPE safety
+
+4) Develop Input File Reader
+- add method for reading data
+- add method for answering the questions read from the input
