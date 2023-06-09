@@ -1,15 +1,173 @@
 package main;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 public class InputInterpreter {
 
+	private final BiMap<String, RomanNumber> foreignValue2RomanMap;
+	private final BiMap<String, Double> currencyMap;
+
+	private static final String INVALID_ANSWER = "I have no idea what you are talking about.";
+	private static final String NO_QUESTIONS = "No questions provided.";
+
+	public InputInterpreter() {
+		this.foreignValue2RomanMap = HashBiMap.create();
+		this.currencyMap = HashBiMap.create();
+	}
+
 	public List<String> interpretInputFromFile(String path) throws IOException {
-		throw new IOException();
+		List<String> questions = new ArrayList<>();
+		
+		if(path == null) {
+			throw new FileNotFoundException("Provided path is 'null'.");
+		}
+		
+		File file = new File(path);
+		try (BufferedReader is = new BufferedReader(new FileReader(file))) {
+			String line;
+			while((line = is.readLine()) != null) {
+				if(interpretInput(line)) {
+					questions.add(line);
+				}
+			}
+		} catch (IOException ex) {
+			throw ex;
+		}
+		
+		return questions;
 	}
 
 	public String getQuestionsResult(List<String> questions) {
-		return "";
+		StringBuilder sb = new StringBuilder();
+
+		if (questions == null || questions.isEmpty()) {
+			return NO_QUESTIONS;
+		}
+
+		for (String question : questions) {
+			sb.append(getQuestionResult(question));
+			sb.append("\n");
+		}
+
+		return sb.toString();
+	}
+
+	private String getQuestionResult(String question) {
+		String questionResult = INVALID_ANSWER;
+		String questionLower = question.toLowerCase();
+
+		if (!(questionLower.startsWith("how much is") || questionLower.startsWith("how many credits is"))) {
+			return questionResult;
+		}
+
+		String answerBeginning = question.substring(question.indexOf("is") + 3, question.indexOf("?") - 1);
+
+		String[] calcValues = answerBeginning.split(" ");
+		String romanNumber = "";
+		double currencyWorth = 1;
+
+		for (int i = 0; i < calcValues.length; i++) {
+			String calcValue = calcValues[i];
+
+			if (foreignValue2RomanMap.containsKey(calcValue)) {
+				romanNumber += foreignValue2RomanMap.get(calcValue).name();
+			} else if ((i == calcValues.length - 1) && currencyMap.containsKey(calcValue)) {
+				currencyWorth = currencyMap.get(calcValue);
+			} else {
+				return questionResult;
+			}
+		}
+
+		int conversionResult = RomanNumberConvertor.convertRomanToArabic(romanNumber);
+		if (conversionResult < 0) {
+			return questionResult;
+		}
+
+		int totalResult = (int) Math.ceil(conversionResult * currencyWorth);
+
+		String answer = answerBeginning + " is " + totalResult
+				+ (questionLower.contains("credits") ? " Credits." : ".");
+		return answer;
+	}
+
+	private boolean interpretInput(String inputLine) {
+		String[] splitLine = inputLine.split(" ");
+
+		if (splitLine.length == 0) {
+			return false;
+		}
+
+		int lastLinePart = splitLine.length - 1;
+		if ("?".equals(splitLine[lastLinePart])) {
+			return true;
+		}
+
+		if (splitLine.length == 3 && splitLine[1].toLowerCase().equals("is")) {
+			RomanNumber romanNumber = null;
+			try {
+				romanNumber = RomanNumber.valueOf(splitLine[2].toUpperCase());
+			} catch (Exception ex) {
+				System.out.println("Invalid roman number: " + splitLine[2]);
+				return false;
+			}
+
+			foreignValue2RomanMap.put(splitLine[0], romanNumber);
+			return false;
+		}
+
+		if ("credits".equals(splitLine[lastLinePart].toLowerCase())) {
+
+			String romanNumber = "";
+			double credits = 0;
+			String currency = "";
+
+			for (String word : splitLine) {
+				if ("is".equals(word.toLowerCase()) || "credits".equals(word.toLowerCase())) {
+					continue;
+				}
+
+				if (foreignValue2RomanMap.get(word) != null) {
+					romanNumber += foreignValue2RomanMap.get(word).name();
+					continue;
+				}
+
+				try {
+					credits = Double.parseDouble(word);
+				} catch (NumberFormatException ex) {
+					currency = word;
+				}
+			}
+
+			if (currency.isEmpty()) {
+				System.out.println("Invalid line: " + inputLine);
+				return false;
+			}
+
+			int romanToArabic = RomanNumberConvertor.convertRomanToArabic(romanNumber);
+			if (romanToArabic < 0) {
+				System.out.println("Invalid line: " + inputLine);
+				return false;
+			} else if (romanToArabic == 0) {
+				// avoid div0
+				romanToArabic = 1;
+			}
+
+			double currencyWorth = credits / romanToArabic;
+			currencyMap.put(currency, currencyWorth);
+
+			return false;
+		}
+
+		System.out.println("Invalid line: " + inputLine);
+		return false;
 	}
 }
