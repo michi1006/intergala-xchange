@@ -6,22 +6,21 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import java.util.Map;
 
 public class InputInterpreter {
 
-	private final BiMap<String, RomanNumber> foreignValue2RomanMap;
-	private final BiMap<String, Double> currencyMap;
+	private final Map<String, RomanNumber> foreignValue2RomanMap;
+	private final Map<String, Double> currencyMap;
 
 	private static final String INVALID_ANSWER = "I have no idea what you are talking about.";
 	private static final String NO_QUESTIONS = "No questions provided.";
 
 	public InputInterpreter() {
-		this.foreignValue2RomanMap = HashBiMap.create();
-		this.currencyMap = HashBiMap.create();
+		this.foreignValue2RomanMap = new HashMap<>();
+		this.currencyMap = new HashMap<>();
 	}
 
 	public static String getInputFromFile(String path) throws IOException {
