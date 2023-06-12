@@ -4,8 +4,13 @@ This program provides a money exchange from intergalactic currencies to so calle
 ## Program
 The intergala-xchange  programm can be run simplified by running the **IntergalaXchange_Main** class. This class reads default input.txt from resources folder and outputs the conversion result to the console.
 
+Can be run with the command on the bash (if maven is installed):
+<code>mvn exec:java -D exec.mainClass=main.IntergalaXchange_Main</code>
+
 Furthermore, there is the *JavaFX* program **IntergalaXchange**, which offers a more user-friendly, interactive UI. There the input can be read from a .txt-file and modified manually in the input text area.
 
+Can be run with the command on the bash (if maven is installed):
+<code>mvn exec:java -D exec.mainClass=main.IntergalaXchange</code>
 ## Classes
 
 General:
