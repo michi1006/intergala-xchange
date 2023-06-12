@@ -11,6 +11,8 @@ Furthermore, there is the *JavaFX* program **IntergalaXchange**, which offers a 
 
 Can be run with the command on the bash (if maven is installed):
 <code>mvn exec:java -D exec.mainClass=main.IntergalaXchange</code>
+or:
+<code>mvn clean javafx:run</code>
 ## Classes
 
 General:
