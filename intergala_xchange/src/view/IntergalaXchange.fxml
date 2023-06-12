@@ -30,7 +30,7 @@
                   <Insets />
                </opaqueInsets>
             </Label>
-            <TextArea fx:id="inputArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="362.0" prefWidth="295.0" GridPane.rowIndex="1" />
+            <TextArea fx:id="inputArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyTyped="#onInputTextChanged" prefHeight="362.0" prefWidth="295.0" GridPane.rowIndex="1" />
             <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="19.0" prefWidth="356.0" GridPane.rowIndex="2">
                <children>
                   <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#onInterpret" prefHeight="26.0" prefWidth="305.0" text="Interpret Input" />

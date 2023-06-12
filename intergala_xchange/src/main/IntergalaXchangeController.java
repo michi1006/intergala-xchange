@@ -50,6 +50,12 @@ public class IntergalaXchangeController implements Initializable {
 			setInputTextForFile(inputFile);
 		}
 	}
+	
+	@FXML
+	private void onInputTextChanged() {
+		outputArea.clear();
+		feedbackArea.clear();
+	}
 
 	private void setInputTextForFile(File file) {
 		String inputText = "";
@@ -60,5 +66,7 @@ public class IntergalaXchangeController implements Initializable {
 		}
 
 		inputArea.setText(inputText);
+		outputArea.clear();
+		feedbackArea.clear();
 	}
 }
