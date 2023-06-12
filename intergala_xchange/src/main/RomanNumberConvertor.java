@@ -1,10 +1,17 @@
 package main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RomanNumberConvertor {
+	
+	private static List<String> conversionFeedback = new ArrayList<>();
 
 	public static int convertRomanToArabic(String romanInput) {
+		conversionFeedback.clear();
+		
 		if(romanInput == null || romanInput.isEmpty()) {
-			System.out.println("Invalid input: " + romanInput);
+			conversionFeedback.add("Empty input: " + romanInput);
 			return -1;
 		}
 		
@@ -20,7 +27,7 @@ public class RomanNumberConvertor {
 				occurances++;
 				
 				if(occurances > 1 & !romanNumber.isRepeatable() || occurances > 3) {
-					System.out.println("Invalid input: " + romanInput + ", " + romanNumber.name()+ " is repeated "+ occurances +" times.");
+					conversionFeedback.add("Invalid input: " + romanInput + ", " + romanNumber.name()+ " is repeated "+ occurances +" times.");
 					return -1;
 				}
 				
@@ -30,10 +37,14 @@ public class RomanNumberConvertor {
 		}
 		
 		if(inputUpper.length() > 0) {
-			System.out.println("Invalid input: " + romanInput + ", could not be fully parsed. Not parsed part: " + inputUpper);
+			conversionFeedback.add("Invalid input: " + romanInput + ", could not be fully parsed. Not parsed part: " + inputUpper);
 			return -1;
 		}
 		
 		return result;
+	}
+	
+	public static List<String> getConversionFeedback() {
+		return conversionFeedback;
 	}
 }

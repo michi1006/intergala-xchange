@@ -25,3 +25,9 @@ Development Steps:
 - add method for answering the questions read from the input
 
 5) Transform into Java FX application
+
+6) Add file chooser option
+- add button to start file chooser
+- read input text from file an print to input text area
+
+7) Add feedback text area to print logs

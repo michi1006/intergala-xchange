@@ -14,6 +14,8 @@ public class InputInterpreter {
 
 	private final Map<String, RomanNumber> foreignValue2RomanMap;
 	private final Map<String, Double> currencyMap;
+	
+	private final List<String> conversionFeedback;
 
 	private static final String INVALID_ANSWER = "I have no idea what you are talking about.";
 	private static final String NO_QUESTIONS = "No questions provided.";
@@ -21,16 +23,12 @@ public class InputInterpreter {
 	public InputInterpreter() {
 		this.foreignValue2RomanMap = new HashMap<>();
 		this.currencyMap = new HashMap<>();
+		this.conversionFeedback = new ArrayList<>();
 	}
 
-	public static String getInputFromFile(String path) throws IOException {
+	public static String getInputFromFile(File file) throws IOException {
 		StringBuilder sb = new StringBuilder();
 
-		if (path == null) {
-			throw new FileNotFoundException("Provided path is 'null'.");
-		}
-
-		File file = new File(path);
 		try (BufferedReader is = new BufferedReader(new FileReader(file))) {
 			String line;
 			while ((line = is.readLine()) != null) {
@@ -62,7 +60,11 @@ public class InputInterpreter {
 	}
 
 	public List<String> interpretInputFromFile(String path) throws IOException {
-		String inputFromFile = getInputFromFile(path);
+		if (path == null) {
+			throw new FileNotFoundException("Provided path is 'null'.");
+		}
+		
+		String inputFromFile = getInputFromFile(new File(path));
 		return interpretInputFromText(inputFromFile);
 	}
 
@@ -136,7 +138,7 @@ public class InputInterpreter {
 			try {
 				romanNumber = RomanNumber.valueOf(splitLine[2].toUpperCase());
 			} catch (Exception ex) {
-				System.out.println("Invalid roman number: " + splitLine[2]);
+				conversionFeedback.add("Invalid roman number: " + splitLine[2]);
 				return false;
 			}
 
@@ -168,13 +170,14 @@ public class InputInterpreter {
 			}
 
 			if (currency.isEmpty()) {
-				System.out.println("Invalid line: " + inputLine);
+				conversionFeedback.add("No matching currency found, invalid line: " + inputLine);
 				return false;
 			}
 
 			int romanToArabic = RomanNumberConvertor.convertRomanToArabic(romanNumber);
 			if (romanToArabic < 0) {
-				System.out.println("Invalid line: " + inputLine);
+				conversionFeedback.add("Invalid line for roman conversion: " + inputLine);
+				conversionFeedback.addAll(RomanNumberConvertor.getConversionFeedback());
 				return false;
 			} else if (romanToArabic == 0) {
 				// avoid div0
@@ -187,7 +190,18 @@ public class InputInterpreter {
 			return false;
 		}
 
-		System.out.println("Invalid line: " + inputLine);
+		conversionFeedback.add("Invalid line: " + inputLine);
 		return false;
+	}
+	
+	public String getConversionFeedback() {
+		StringBuilder sb = new StringBuilder();
+		
+		for (String feedback : conversionFeedback) {
+			sb.append(feedback);
+			sb.append("\n");
+		}
+		
+		return sb.toString();
 	}
 }
