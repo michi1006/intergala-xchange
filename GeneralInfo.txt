@@ -23,3 +23,5 @@ Development Steps:
 4) Develop Input File Reader
 - add method for reading data
 - add method for answering the questions read from the input
+
+5) Transform into Java FX application

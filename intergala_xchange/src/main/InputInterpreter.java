@@ -24,26 +24,47 @@ public class InputInterpreter {
 		this.currencyMap = HashBiMap.create();
 	}
 
-	public List<String> interpretInputFromFile(String path) throws IOException {
-		List<String> questions = new ArrayList<>();
-		
-		if(path == null) {
+	public static String getInputFromFile(String path) throws IOException {
+		StringBuilder sb = new StringBuilder();
+
+		if (path == null) {
 			throw new FileNotFoundException("Provided path is 'null'.");
 		}
-		
+
 		File file = new File(path);
 		try (BufferedReader is = new BufferedReader(new FileReader(file))) {
 			String line;
-			while((line = is.readLine()) != null) {
-				if(interpretInput(line)) {
-					questions.add(line);
-				}
+			while ((line = is.readLine()) != null) {
+				sb.append(line);
+				sb.append("\n");
 			}
 		} catch (IOException ex) {
 			throw ex;
 		}
+
+		return sb.toString();
+	}
+
+	public List<String> interpretInputFromText(String text) {
+		List<String> questions = new ArrayList<>();
 		
+		if(text == null) {
+			return questions;
+		}
+
+		String[] splitText = text.split("\n");
+		for (String line : splitText) {
+			if (interpretInput(line)) {
+				questions.add(line);
+			}
+		}
+
 		return questions;
+	}
+
+	public List<String> interpretInputFromFile(String path) throws IOException {
+		String inputFromFile = getInputFromFile(path);
+		return interpretInputFromText(inputFromFile);
 	}
 
 	public String getQuestionsResult(List<String> questions) {
